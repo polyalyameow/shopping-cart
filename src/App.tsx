@@ -1,15 +1,16 @@
 // import {useState} from 'react';
 import { useQuery } from 'react-query';
 
-import Drawer from '@material-ui/Drawer';
+import Drawer from '@mui/material/Drawer';
 import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import Badge from '@mui/material/ui/core/Badge';
+import Badge from '@mui/material/Badge';
 
-import { Wrapper } from "./App.styles";
+import { Wrapper, StyledButton } from './App.styles';
 
 import Item from './Item/Item';
+import { useState } from 'react';
 
 // Types
 export type CartItemType = {
@@ -26,12 +27,19 @@ const getProducts = async(): Promise<CartItemType[]> =>
   await (await fetch('https://fakestoreapi.com/products')).json();
 
 function App() {
+  const [cartOpen, setCartOpen] = useState(false);
+
+  //items that we actually have in our cart
+  const [cartItems, setCartItems] = useState([] as CartItemType[]);
+
   const {data, isLoading, error} = useQuery<CartItemType[]>('products', getProducts);
   console.log(data)
 
-  // const getTotalItems = () => null;
+  const getTotalItems = (items: CartItemType[]) => {
+    return items.reduce((ack: number, item) => ack + item.amount, 0)
+  };
 
-  // const handleAddToCart = (clickedItem: CartItemType) => null;
+  const handleAddToCart = (clickedItem: CartItemType) => null;
 
   // const removeFromCart = () => null;
 
@@ -42,8 +50,20 @@ function App() {
   return (
     <>
       <Wrapper>
+        <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
+          Cart goes here
+        </Drawer>
+        <StyledButton onClick={() => setCartOpen(true)}>
+          <Badge badgeContent={getTotalItems(cartItems)} color="error">
+            <AddShoppingCartIcon />
+          </Badge>
+        </StyledButton>
         <Grid container spacing={3}>
-          {data?.map((item) => )}
+          {data?.map((item) => (
+            <Grid item key={item.id} xs={12} sm={4}>
+              <Item item={item} handleAddToCart={handleAddToCart}/>
+            </Grid>
+          ))}
         </Grid>
       </Wrapper>
     </>
