@@ -2,7 +2,6 @@
 import { useQuery } from 'react-query';
 
 import Drawer from '@mui/material/Drawer';
-import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Badge from '@mui/material/Badge';
@@ -16,7 +15,7 @@ import { useState } from 'react';
 // Types
 export type CartItemType = {
   id: number;
-  category: string;
+  category: string; 
   description: string;
   image: string;
   price: number;
